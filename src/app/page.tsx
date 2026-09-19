@@ -26,7 +26,7 @@ export default function Home() {
           </p>
 
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-            Neighborhood Listing Platform
+            Neighborhood Property Listing Platform
           </h1>
 
           <p className="mt-6 text-lg leading-8 text-slate-600">
