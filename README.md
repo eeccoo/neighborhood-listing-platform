@@ -51,3 +51,21 @@ The local page and deployed application were also inspected in the browser.
 ## AI Collaboration
 
 Material AI interactions and verification decisions are documented in [`docs/ai-log.md`](docs/ai-log.md).
+
+## Component Hierarchy
+
+```mermaid
+flowchart TD
+    Page["Neighborhood Listings Page"]
+    Filters["SearchFilters"]
+    Sponsor["SponsorBanner"]
+    Grid["Property Listing Grid"]
+    Card["PropertyCard"]
+
+    Page --> Filters
+    Page --> Sponsor
+    Page --> Grid
+    Grid --> Card
+```
+
+The page contains labeled search filters, a sponsored-business banner, and a responsive property-listing grid. The grid renders reusable property cards from typed data using stable property IDs.
