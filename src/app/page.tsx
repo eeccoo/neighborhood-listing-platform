@@ -1,59 +1,157 @@
-const features = [
+"use client";
+
+import { useState } from "react";
+
+import PropertyCard from "@/components/PropertyCard";
+import SearchFilters from "@/components/SearchFilters";
+import SponsorBanner from "@/components/SponsorBanner";
+import type {
+  Property,
+  SearchFilterValues,
+  Sponsor,
+} from "@/types";
+
+const properties: Property[] = [
   {
-    title: "Property Listings",
-    description:
-      "Explore neighborhood homes, rentals, and shared community spaces.",
+    id: "maple-craftsman",
+    title: "Maple Street Craftsman",
+    streetAddress: "124 Maple Street",
+    city: "Los Angeles",
+    state: "CA",
+    price: 785000,
+    bedrooms: 3,
+    bathrooms: 2,
+    squareFootage: 1650,
+    imagePath: "/property-home.svg",
+    detailsUrl: "/?property=maple-craftsman#listings",
+    propertyType: "single-family",
   },
   {
-    title: "Neighborhood Sponsors",
-    description:
-      "Discover local businesses and organizations that support the community.",
+    id: "sunset-condo",
+    title: "Sunset View Condo",
+    streetAddress: "808 Sunset Avenue",
+    city: "Los Angeles",
+    state: "CA",
+    price: 625000,
+    bedrooms: 2,
+    bathrooms: 2,
+    squareFootage: 1180,
+    imagePath: "/property-home.svg",
+    detailsUrl: "/?property=sunset-condo#listings",
+    propertyType: "condo",
   },
   {
-    title: "Voice Help",
-    description:
-      "Get accessible voice-guided help while navigating property information.",
+    id: "echo-park-townhouse",
+    title: "Echo Park Townhouse",
+    streetAddress: "451 Lakeview Terrace",
+    city: "Los Angeles",
+    state: "CA",
+    price: 950000,
+    bedrooms: 4,
+    bathrooms: 2.5,
+    squareFootage: 2100,
+    imagePath: "/property-home.svg",
+    detailsUrl: "/?property=echo-park-townhouse#listings",
+    propertyType: "townhouse",
   },
 ];
 
+const sponsor: Sponsor = {
+  id: "neighborhood-hardware",
+  businessName: "Neighborhood Hardware",
+  shortDescription:
+    "Locally owned supplies and practical advice for maintaining your home.",
+  destinationUrl: "/#listings",
+};
+
 export default function Home() {
+  const [filters, setFilters] = useState<SearchFilterValues>({});
+
+  const filteredProperties = properties.filter((property) => {
+    const matchesType =
+      filters.propertyType === undefined ||
+      property.propertyType === filters.propertyType;
+
+    const matchesPrice =
+      filters.minPrice === undefined ||
+      property.price >= filters.minPrice;
+
+    const matchesBedrooms =
+      filters.bedrooms === undefined ||
+      property.bedrooms >= filters.bedrooms;
+
+    return matchesType && matchesPrice && matchesBedrooms;
+  });
+
+  function handleFilterSubmit(
+    submittedFilters: SearchFilterValues,
+  ) {
+    setFilters(submittedFilters);
+  }
+
   return (
-    <main className="min-h-screen bg-slate-50 px-6 py-16 text-slate-900">
-      <div className="mx-auto max-w-6xl">
+    <main className="min-h-screen bg-slate-50 px-6 py-12 text-slate-950">
+      <div className="mx-auto max-w-7xl">
         <header className="max-w-3xl">
-          <p className="mb-3 font-semibold uppercase tracking-widest text-blue-700">
+          <p className="font-semibold uppercase tracking-widest text-blue-700">
             Welcome to your neighborhood
           </p>
 
-          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
+          <h1 className="mt-3 text-4xl font-bold tracking-tight sm:text-5xl">
             Neighborhood Property Listing Platform
           </h1>
 
           <p className="mt-6 text-lg leading-8 text-slate-600">
-            A community-focused platform that connects residents with local
-            properties, neighborhood sponsors, and accessible support.
+            Explore local properties, connect with neighborhood
+            sponsors, and use accessible search tools.
           </p>
         </header>
 
-        <section
-          className="mt-12 grid gap-6 md:grid-cols-3"
-          aria-labelledby="features-heading"
-        >
-          <h2 id="features-heading" className="sr-only">
-            Platform features
-          </h2>
+        <div className="mt-10">
+          <SearchFilters onSubmit={handleFilterSubmit} />
+        </div>
 
-          {features.map((feature) => (
-            <article
-              key={feature.title}
-              className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+        <div className="mt-8">
+          <SponsorBanner sponsor={sponsor} />
+        </div>
+
+        <section
+          id="listings"
+          aria-labelledby="property-listings-heading"
+          className="mt-12"
+        >
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <h2
+              id="property-listings-heading"
+              className="text-3xl font-bold tracking-tight"
             >
-              <h3 className="text-xl font-semibold">{feature.title}</h3>
-              <p className="mt-3 leading-7 text-slate-600">
-                {feature.description}
-              </p>
-            </article>
-          ))}
+              Property listings
+            </h2>
+
+            <p aria-live="polite" className="text-slate-600">
+              Showing {filteredProperties.length} of{" "}
+              {properties.length} properties
+            </p>
+          </div>
+
+          {filteredProperties.length > 0 ? (
+            <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {filteredProperties.map((property, index) => (
+                <PropertyCard
+                  key={property.id}
+                  property={property}
+                  priority={index === 0}
+                />
+              ))}
+            </div>
+          ) : (
+            <p
+              role="status"
+              className="mt-6 rounded-lg border border-slate-300 bg-white p-5"
+            >
+              No properties match the selected filters.
+            </p>
+          )}
         </section>
       </div>
     </main>
