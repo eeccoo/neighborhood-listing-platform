@@ -31,7 +31,7 @@ export default function PropertyCard({
     >
       <Image
         src={property.imagePath}
-        alt={`${property.streetAddress}, ${property.city}, ${property.state}`}
+        alt={`Illustration representing ${property.title} at ${property.streetAddress}, ${property.city}, ${property.state}`}
         width={640}
         height={360}
         priority={priority}
