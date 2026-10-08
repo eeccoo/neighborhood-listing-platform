@@ -1,0 +1,162 @@
+[
+  {
+    "property_id": "prop-101",
+    "title": "Pinecrest Modern Villa",
+    "street_address": "742 Evergreen Terrace",
+    "city": "Springfield",
+    "state": "OR",
+    "zip_code": "97477",
+    "price": 425000,
+    "bedrooms": 3,
+    "bathrooms": 2.5,
+    "square_feet": 1850,
+    "property_type": "single-family",
+    "image_path": "/images/properties/pinecrest-villa.jpg",
+    "details_url": "/listings/prop-101",
+    "amenities": [
+      "air-conditioning",
+      "parking",
+      "pet-friendly",
+      "laundry"
+    ],
+    "local_sponsors": [
+      {
+        "sponsor_id": "spons-01",
+        "business_name": "Cascade Home Inspection",
+        "short_description": "Certified residential structural inspections and radon testing.",
+        "destination_url": "https://example.com/cascade-inspections",
+        "category": "home-services",
+        "sponsored_label": "Sponsored",
+        "is_active": true
+      }
+    ]
+  },
+  {
+    "property_id": "prop-102",
+    "title": "Skyline Harbor Penthouse",
+    "street_address": "1200 Harbor Point Way",
+    "city": "Seattle",
+    "state": "WA",
+    "zip_code": "98101",
+    "price": 890000,
+    "bedrooms": 2,
+    "bathrooms": 2,
+    "square_feet": 1420,
+    "property_type": "condo",
+    "image_path": "/images/properties/skyline-harbor.jpg",
+    "details_url": "/listings/prop-102",
+    "amenities": [
+      "accessible-entry",
+      "pool",
+      "air-conditioning",
+      "parking"
+    ],
+    "local_sponsors": [
+      {
+        "sponsor_id": "spons-02",
+        "business_name": "Soundview Mortgage Advisors",
+        "short_description": "Competitive rate mortgage consultations for premier condominiums.",
+        "destination_url": "https://example.com/soundview-mortgage",
+        "category": "finance",
+        "sponsored_label": "Sponsored",
+        "is_active": true
+      }
+    ]
+  },
+  {
+    "property_id": "prop-103",
+    "title": "Maple Row Urban Townhome",
+    "street_address": "518 Maple Grove Lane",
+    "city": "Austin",
+    "state": "TX",
+    "zip_code": "78704",
+    "price": 540000,
+    "bedrooms": 3,
+    "bathrooms": 3,
+    "square_feet": 1750,
+    "property_type": "townhouse",
+    "image_path": "/images/properties/maple-row.jpg",
+    "details_url": "/listings/prop-103",
+    "amenities": [
+      "parking",
+      "pet-friendly",
+      "laundry",
+      "air-conditioning"
+    ],
+    "local_sponsors": [
+      {
+        "sponsor_id": "spons-03",
+        "business_name": "South Lamar Artisanal Roasters",
+        "short_description": "Locally roasted specialty coffee and handcrafted pastries.",
+        "destination_url": "https://example.com/south-lamar-roasters",
+        "category": "food-and-drink",
+        "sponsored_label": "Sponsored",
+        "is_active": true
+      }
+    ]
+  },
+  {
+    "property_id": "prop-104",
+    "title": "Oakridge Garden Residences",
+    "street_address": "3302 Oakridge Boulevard",
+    "city": "Raleigh",
+    "state": "NC",
+    "zip_code": "27607",
+    "price": 675000,
+    "bedrooms": 4,
+    "bathrooms": 3.5,
+    "square_feet": 2600,
+    "property_type": "multi-family",
+    "image_path": "/images/properties/oakridge-gardens.jpg",
+    "details_url": "/listings/prop-104",
+    "amenities": [
+      "parking",
+      "laundry",
+      "pet-friendly",
+      "accessible-entry"
+    ],
+    "local_sponsors": [
+      {
+        "sponsor_id": "spons-04",
+        "business_name": "Triangle Community Yoga Studio",
+        "short_description": "Holistic vinyasa classes and wellness sessions for all skill levels.",
+        "destination_url": "https://example.com/triangle-yoga",
+        "category": "health-and-wellness",
+        "sponsored_label": "Sponsored",
+        "is_active": true
+      }
+    ]
+  },
+  {
+    "property_id": "prop-105",
+    "title": "Metropolitan Lofts Unit 4B",
+    "street_address": "88 North Front Street",
+    "city": "Columbus",
+    "state": "OH",
+    "zip_code": "43215",
+    "price": 310000,
+    "bedrooms": 1,
+    "bathrooms": 1,
+    "square_feet": 850,
+    "property_type": "apartment",
+    "image_path": "/images/properties/metropolitan-lofts.jpg",
+    "details_url": "/listings/prop-105",
+    "amenities": [
+      "air-conditioning",
+      "accessible-entry",
+      "pool",
+      "pet-friendly"
+    ],
+    "local_sponsors": [
+      {
+        "sponsor_id": "spons-05",
+        "business_name": "Riverfront Community Foundation",
+        "short_description": "Neighborhood advocacy programs and urban green space initiatives.",
+        "destination_url": "https://example.com/riverfront-foundation",
+        "category": "community",
+        "sponsored_label": "Sponsored",
+        "is_active": true
+      }
+    ]
+  }
+]
