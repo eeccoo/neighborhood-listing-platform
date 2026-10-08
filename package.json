@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "schema:generate": "tsx scripts/export-json-schema.ts"
   },
   "dependencies": {
     "next": "16.3.5",
