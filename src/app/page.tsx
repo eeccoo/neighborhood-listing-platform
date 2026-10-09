@@ -5,83 +5,34 @@ import { useState } from "react";
 import PropertyCard from "@/components/PropertyCard";
 import SearchFilters from "@/components/SearchFilters";
 import SponsorBanner from "@/components/SponsorBanner";
-import type {
-  Property,
-  SearchFilterValues,
-  Sponsor,
-} from "@/types";
-
-const properties: Property[] = [
-  {
-    id: "maple-craftsman",
-    title: "Maple Street Craftsman",
-    streetAddress: "124 Maple Street",
-    city: "Los Angeles",
-    state: "CA",
-    price: 785000,
-    bedrooms: 3,
-    bathrooms: 2,
-    squareFootage: 1650,
-    imagePath: "/property-home.svg",
-    detailsUrl: "/?property=maple-craftsman#listings",
-    propertyType: "single-family",
-  },
-  {
-    id: "sunset-condo",
-    title: "Sunset View Condo",
-    streetAddress: "808 Sunset Avenue",
-    city: "Los Angeles",
-    state: "CA",
-    price: 625000,
-    bedrooms: 2,
-    bathrooms: 2,
-    squareFootage: 1180,
-    imagePath: "/property-home.svg",
-    detailsUrl: "/?property=sunset-condo#listings",
-    propertyType: "condo",
-  },
-  {
-    id: "echo-park-townhouse",
-    title: "Echo Park Townhouse",
-    streetAddress: "451 Lakeview Terrace",
-    city: "Los Angeles",
-    state: "CA",
-    price: 950000,
-    bedrooms: 4,
-    bathrooms: 2.5,
-    squareFootage: 2100,
-    imagePath: "/property-home.svg",
-    detailsUrl: "/?property=echo-park-townhouse#listings",
-    propertyType: "townhouse",
-  },
-];
-
-const sponsor: Sponsor = {
-  id: "neighborhood-hardware",
-  businessName: "Neighborhood Hardware",
-  shortDescription:
-    "Locally owned supplies and practical advice for maintaining your home.",
-  destinationUrl: "/#listings",
-};
+import { properties, sponsor } from "@/data/properties";
+import type { SearchFilterValues } from "@/types";
 
 export default function Home() {
-  const [filters, setFilters] = useState<SearchFilterValues>({});
+  const [filters, setFilters] =
+    useState<SearchFilterValues>({});
 
-  const filteredProperties = properties.filter((property) => {
-    const matchesType =
-      filters.propertyType === undefined ||
-      property.propertyType === filters.propertyType;
+  const filteredProperties = properties.filter(
+    (property) => {
+      const matchesType =
+        filters.propertyType === undefined ||
+        property.propertyType === filters.propertyType;
 
-    const matchesPrice =
-      filters.minPrice === undefined ||
-      property.price >= filters.minPrice;
+      const matchesPrice =
+        filters.minPrice === undefined ||
+        property.price >= filters.minPrice;
 
-    const matchesBedrooms =
-      filters.bedrooms === undefined ||
-      property.bedrooms >= filters.bedrooms;
+      const matchesBedrooms =
+        filters.bedrooms === undefined ||
+        property.bedrooms >= filters.bedrooms;
 
-    return matchesType && matchesPrice && matchesBedrooms;
-  });
+      return (
+        matchesType &&
+        matchesPrice &&
+        matchesBedrooms
+      );
+    },
+  );
 
   function handleFilterSubmit(
     submittedFilters: SearchFilterValues,
@@ -102,13 +53,16 @@ export default function Home() {
           </h1>
 
           <p className="mt-6 text-lg leading-8 text-slate-600">
-            Explore local properties, connect with neighborhood
-            sponsors, and use accessible search tools.
+            Explore local properties, connect with
+            neighborhood sponsors, and use accessible
+            search tools.
           </p>
         </header>
 
         <div className="mt-10">
-          <SearchFilters onSubmit={handleFilterSubmit} />
+          <SearchFilters
+            onSubmit={handleFilterSubmit}
+          />
         </div>
 
         <div className="mt-8">
@@ -128,7 +82,10 @@ export default function Home() {
               Property listings
             </h2>
 
-            <p aria-live="polite" className="text-slate-600">
+            <p
+              aria-live="polite"
+              className="text-slate-600"
+            >
               Showing {filteredProperties.length} of{" "}
               {properties.length} properties
             </p>
@@ -136,13 +93,15 @@ export default function Home() {
 
           {filteredProperties.length > 0 ? (
             <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {filteredProperties.map((property, index) => (
-                <PropertyCard
-                  key={property.id}
-                  property={property}
-                  priority={index === 0}
-                />
-              ))}
+              {filteredProperties.map(
+                (property, index) => (
+                  <PropertyCard
+                    key={property.id}
+                    property={property}
+                    priority={index === 0}
+                  />
+                ),
+              )}
             </div>
           ) : (
             <p
