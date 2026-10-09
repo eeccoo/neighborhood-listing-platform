@@ -82,3 +82,94 @@
 ### Review Decision
 
 AI output was treated as draft feedback. Suggestions were accepted only when they addressed the implemented code and could be checked against browser behavior. Unsupported, unnecessary, or assignment-conflicting recommendations were documented and rejected.
+
+## Validated Data Contracts and Normalization Review
+
+### Google AI Studio Synthetic Data Generation
+
+**Prompt:**
+
+> Using the supplied JSON Schema, generate exactly five fictional property records. Return only JSON that satisfies the schema. Do not build an application or include Markdown, explanations, comments, or code fences. All property, address, sponsor, business, and URL information must be synthetic.
+
+**Useful output accepted:**
+
+- Five synthetic property records were generated.
+- Every record included the required property, address, pricing, property-type, amenity, and sponsor fields.
+- The generated values used the allowed property-type, amenity, and sponsor-category values.
+
+**Output rejected or limited:**
+
+- Generated records were not assumed to be factually accurate.
+- Generated addresses and businesses were treated only as fictional test data.
+- The available AI Studio interface did not expose a structured-output control. The JSON Schema was therefore included directly in the prompt instead.
+- AI output was not sent directly to the interface or database without validation.
+
+**Verification:**
+
+- The raw response was preserved in `data/generated/properties.raw.json`.
+- Zod validation accepted all five records and wrote `data/generated/properties.validated.json`.
+- The validator reported `Validation passed: 5 property records`.
+- No real client or personal data was used.
+
+**Related commit:** `a1f93df`
+
+### ChatGPT Normalization Review
+
+**Prompt:**
+
+> Review this fictional neighborhood-listing data model for normalization problems. Evaluate duplicated sponsor data, the Property-to-Sponsor relationship, and whether amenities should use free text, controlled values, or a join table. Recommend the smallest design appropriate for the current project and identify work that should be postponed.
+
+**Useful output accepted:**
+
+- Repeated sponsor details could become inconsistent when one sponsor supports multiple properties.
+- `Property`, `Sponsor`, and `PropertySponsor` should remain separate domain concepts.
+- Property-specific placement information, such as a customized sponsored label, belongs on the relationship.
+- Amenities should remain a controlled enumeration array for the current application.
+- Free-text amenities were rejected because inconsistent spelling and capitalization would weaken validation and filtering.
+
+**Output rejected or postponed:**
+
+- A separate `Amenity` entity and `PropertyAmenity` join table were postponed because the current application does not attach metadata to individual amenities.
+- A full database implementation was not added because this project currently uses validated JSON test data.
+- Nested sponsors were not automatically treated as invalid. They remain useful as a validated JSON read model even though future database storage should normalize the relationship.
+
+**Verification:**
+
+- The project defines separate `PropertySchema`, `SponsorSchema`, and `PropertySponsorSchema` contracts.
+- Invalid amenity values are rejected by the controlled Zod enumeration.
+- The UI receives data only after `PropertyCollectionSchema.parse` succeeds.
+
+**Related commits:** `703296e`, `1851eff`
+
+### Gemini Normalization Review
+
+**Prompt:**
+
+> Review this fictional neighborhood-listing data model for normalization problems. Identify duplicated or inconsistent data risks, determine whether sponsors should remain nested or use a PropertySponsor relationship, evaluate free-text, controlled-value, and join-table amenity designs, recommend the smallest current design, and identify one suggestion to postpone.
+
+**Useful output accepted:**
+
+- Gemini identified duplication and update-anomaly risks when full sponsor records are repeated under multiple properties.
+- Gemini recommended separate `Property`, `Sponsor`, and `PropertySponsor` concepts.
+- It recommended placing relationship-specific information such as display order or customized labels on `PropertySponsor`.
+- It recommended retaining controlled amenity values for the current project.
+- It recommended postponing a separate amenity table until amenities require metadata, localization, or larger-scale analytics.
+
+**Output rejected or qualified:**
+
+- The absolute statement that nested sponsor JSON necessarily violates relational normal forms was qualified. Normal forms describe relational storage, while nested JSON can intentionally serve as a denormalized read model.
+- A database migration was not implemented because the current assignment requires a validated data contract rather than a production database.
+- The suggested amenity join table was postponed as unnecessary for the current scope.
+
+**Verification:**
+
+- ChatGPT and Gemini independently identified the same sponsor-duplication risk.
+- The chosen controlled amenity list was enforced by Zod.
+- Tests passed for one valid record and four invalid cases: missing ID, negative price, invalid ZIP code, and an unknown field.
+- The validated dataset rendered five property cards, and the Condo filter returned the expected single record.
+
+**Related commits:** `f44254e`, `1851eff`
+
+### Data-Model Decision
+
+AI recommendations were treated as proposals rather than facts. The project keeps separate Property, Sponsor, and PropertySponsor concepts while allowing nested sponsors in the validated JSON read model. Amenities remain a controlled enumeration array. A normalized database relationship and separate amenity entity are postponed until the application requires persistent relational storage or amenity-specific metadata.
