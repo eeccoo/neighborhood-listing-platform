@@ -62,7 +62,7 @@ begin
       2.5,
       1850,
       'single-family',
-      '/images/properties/pinecrest-villa.jpg',
+      '/property-home.svg',
       '/properties/11111111-1111-4111-8111-111111111111',
       array['air-conditioning', 'parking', 'pet-friendly', 'laundry'],
       true
@@ -80,7 +80,7 @@ begin
       3.0,
       1750,
       'townhouse',
-      '/images/properties/owner-draft-townhouse.jpg',
+      '/property-home.svg',
       '/properties/22222222-2222-4222-8222-222222222222',
       array['parking', 'pet-friendly', 'laundry'],
       false
@@ -98,7 +98,7 @@ begin
       2.0,
       1420,
       'condo',
-      '/images/properties/other-draft-condo.jpg',
+      '/property-home.svg',
       '/properties/33333333-3333-4333-8333-333333333333',
       array['accessible-entry', 'pool', 'parking'],
       false
