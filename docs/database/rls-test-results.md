@@ -195,3 +195,42 @@ An empty JSON array means the request was syntactically valid and authenticated,
 A `403 Forbidden` explicitly states that the server understood the request but refused it. That response is clearer to an authorized application user, but it may reveal that the protected resource or operation exists.
 
 Application code must inspect the number of affected rows. It must not interpret `HTTP 200` with `[]` as proof that an update succeeded.
+
+## Inquiry Column-Level Authorization
+
+Gemini identified that property owners had table-level update permission on inquiries. RLS restricted eligible rows but did not restrict which columns could be changed.
+
+Migration `20261018000200_restrict_inquiry_updates.sql` replaced table-level update permission with:
+
+```sql
+revoke update on public.inquiries from authenticated;
+
+grant update (status)
+on public.inquiries
+to authenticated;
+```
+
+### Message Tampering Attempt
+
+```bash
+curl -i -X PATCH \
+  "$NEXT_PUBLIC_SUPABASE_URL/rest/v1/inquiries?id=eq.cccccccc-cccc-4ccc-8ccc-cccccccccccc" \
+  -H "apikey: $NEXT_PUBLIC_SUPABASE_ANON_KEY" \
+  -H "Authorization: Bearer $OWNER_ACCESS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -H "Prefer: return=representation" \
+  -d '{"message":"Unauthorized message tampering attempt."}'
+```
+
+```http
+HTTP/1.1 403 Forbidden
+Proxy-Status: PostgREST; error=42501
+
+{"code":"42501","details":null,"hint":"Grant the required privileges to the current role with: GRANT UPDATE ON public.inquiries TO authenticated;","message":"permission denied for table inquiries"}
+```
+
+The authenticated property owner could not change the inquiry author’s message.
+
+### Status Update
+
+The same authenticated property owner successfully updated the inquiry `status` field. This confirmed that the column restriction prevented message tampering without blocking the intended workflow.
