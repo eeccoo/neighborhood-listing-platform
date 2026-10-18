@@ -173,3 +173,85 @@ AI output was treated as draft feedback. Suggestions were accepted only when the
 ### Data-Model Decision
 
 AI recommendations were treated as proposals rather than facts. The project keeps separate Property, Sponsor, and PropertySponsor concepts while allowing nested sponsors in the validated JSON read model. Amenities remain a controlled enumeration array. A normalized database relationship and separate amenity entity are postponed until the application requires persistent relational storage or amenity-specific metadata.
+
+## PostgreSQL, Supabase, CRUD, and RLS Review
+
+### Google AI Studio DDL Proposal
+
+**Prompt:**
+
+> Act as a defensive PostgreSQL and Supabase database engineer. Propose DDL for profiles, properties, sponsors, property_sponsors, and inquiries. Include keys, constraints, timestamps, cascade behavior, RLS, ownership rules, public approved-content access, server-only administration, and executable tests using placeholders.
+
+**Useful output accepted:**
+
+- Use explicit primary and foreign keys.
+- Apply controlled-value constraints.
+- Base owner authorization on `auth.uid()`.
+- Limit public reads to approved properties and active sponsors.
+- Use cascade deletion for derivative junction records.
+- Keep administrative credentials server-only.
+- Enable RLS on every exposed table.
+
+**Output rejected:**
+
+- The generated SQL was not executed because function bodies and table definitions were missing or truncated.
+- Several regular expressions were corrupted.
+- RLS policies and tests were incomplete.
+- Generated enumeration values did not match the application contract.
+- One section incorrectly referred to `server_role` instead of Supabase `service_role`.
+
+**Verification:**
+
+The project uses a manually reviewed numbered migration. A dry run identified the correct migration before it was applied to the development Supabase project.
+
+### ChatGPT Defensive Review
+
+**Useful output accepted:**
+
+- Separate public approved-record policies from owner draft-record policies.
+- Derive `owner_id` from the authenticated session rather than request JSON.
+- Force new property records to `is_approved = false`.
+- Use explicit selected columns in the public GET route.
+- Treat HTTP `200` with `[]` as zero affected rows rather than successful authorization.
+- Keep the administrative client in a server-only module.
+- Test anonymous, owner, other-user, and service-role behavior with credentials stored only in local environment variables.
+
+**Output rejected or limited:**
+
+- No credentials or invented responses were accepted.
+- No direct production-database edits were used as a replacement for versioned migrations.
+- Service-role access was not exposed through client code.
+- Automated results were not treated as proof until the real API responses were captured.
+
+**Verification:**
+
+- Anonymous approved reads returned one approved property.
+- Anonymous inserts returned HTTP `401` with PostgreSQL code `42501`.
+- A non-owner update returned HTTP `200` with `[]`.
+- The actual owner updated one draft row successfully.
+- The service role read all three test properties.
+- Lint and production build passed.
+
+### Gemini Security Critique
+
+**Useful output accepted:**
+
+- Gemini identified that inquiry RLS restricted rows but table-level `UPDATE` permission still allowed property owners to modify any inquiry column.
+- A follow-up migration revoked table-level update permission and granted authenticated users update access only to the `status` column.
+- Gemini confirmed that profile column-level grants protect `is_admin`.
+- Gemini correctly identified HTTP `200 []` as a possible zero-row RLS result.
+
+**Output rejected or postponed:**
+
+- Sponsor-owner management of `property_sponsors` was postponed. The current workflow intentionally requires the property owner to approve and manage sponsorship placement.
+- No claim of complete security compliance was accepted from static code review.
+
+**Verification:**
+
+- A property owner’s attempt to modify an inquiry message returned HTTP `403` with code `42501`.
+- The intended inquiry-status update remained permitted.
+- The security correction was stored in `20261018000200_restrict_inquiry_updates.sql`.
+
+### Review Decision
+
+AI output was treated as draft technical feedback. Recommendations were accepted only when they matched the project requirements and were verified against the development database. Incomplete, overbroad, or workflow-conflicting suggestions were documented and rejected.
