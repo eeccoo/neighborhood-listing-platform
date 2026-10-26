@@ -2,6 +2,14 @@ import { isIP } from "node:net";
 
 import { z } from "zod";
 
+const sponsorCategories = [
+  "community",
+  "finance",
+  "food-and-drink",
+  "health-and-wellness",
+  "home-services",
+] as const;
+
 const SponsorDestinationUrlSchema = z
   .string()
   .trim()
@@ -46,8 +54,25 @@ export const SponsorInputSchema = z
   })
   .strict();
 
+export const CreateSponsorSchema = z
+  .object({
+    business_name: z.string().trim().min(2).max(100),
+    short_description: z
+      .string()
+      .trim()
+      .min(10)
+      .max(500),
+    destination_url: SponsorDestinationUrlSchema,
+    category: z.enum(sponsorCategories),
+  })
+  .strict();
+
 export type SponsorInput = z.infer<
   typeof SponsorInputSchema
+>;
+
+export type CreateSponsorInput = z.infer<
+  typeof CreateSponsorSchema
 >;
 
 export function formatSponsorValidationError(
