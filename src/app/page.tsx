@@ -5,10 +5,10 @@ import { useEffect, useState } from "react";
 import PropertyCard from "@/components/PropertyCard";
 import SearchFilters from "@/components/SearchFilters";
 import SponsorBanner from "@/components/SponsorBanner";
-import { sponsor } from "@/data/properties";
 import type {
   Property,
   SearchFilterValues,
+  Sponsor,
 } from "@/types";
 
 interface PropertyApiRecord {
@@ -31,6 +31,10 @@ interface PropertyApiRecord {
 
 interface PropertyApiResponse {
   properties: PropertyApiRecord[];
+}
+
+interface SponsorApiResponse {
+  sponsor: Sponsor | null;
 }
 
 function mapApiProperty(
@@ -56,9 +60,15 @@ export default function Home() {
   const [properties, setProperties] = useState<Property[]>(
     [],
   );
+
+  const [selectedSponsor, setSelectedSponsor] =
+    useState<Sponsor | null>(null);
+
   const [filters, setFilters] =
     useState<SearchFilterValues>({});
+
   const [isLoading, setIsLoading] = useState(true);
+
   const [loadError, setLoadError] = useState<
     string | null
   >(null);
@@ -110,6 +120,53 @@ export default function Home() {
       abortController.abort();
     };
   }, []);
+
+  useEffect(() => {
+  if (properties.length === 0) {
+    return;
+  }
+
+    const abortController = new AbortController();
+    const propertyId = properties[0].id;
+
+    async function loadSelectedSponsor() {
+      try {
+        const response = await fetch(
+          `/api/properties/${encodeURIComponent(propertyId)}/sponsor`,
+          {
+            cache: "no-store",
+            signal: abortController.signal,
+          },
+        );
+
+        if (!response.ok) {
+          setSelectedSponsor(null);
+          return;
+        }
+
+        const payload =
+          (await response.json()) as SponsorApiResponse;
+
+        setSelectedSponsor(payload.sponsor);
+      } catch (error) {
+        if (
+          error instanceof DOMException &&
+          error.name === "AbortError"
+        ) {
+          return;
+        }
+
+        // Safe fallback: do not display an unverified sponsor.
+        setSelectedSponsor(null);
+      }
+    }
+
+    void loadSelectedSponsor();
+
+    return () => {
+      abortController.abort();
+    };
+  }, [properties]);
 
   const filteredProperties = properties.filter(
     (property) => {
@@ -164,9 +221,11 @@ export default function Home() {
           />
         </div>
 
-        <div className="mt-8">
-          <SponsorBanner sponsor={sponsor} />
-        </div>
+        {selectedSponsor && (
+          <div className="mt-8">
+            <SponsorBanner sponsor={selectedSponsor} />
+          </div>
+        )}
 
         <section
           id="listings"
