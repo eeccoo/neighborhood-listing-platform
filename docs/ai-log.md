@@ -259,7 +259,7 @@ AI output was treated as draft technical feedback. Recommendations were accepted
 
 ### Initial student prompt (verbatim)
 
-> help me with stepe by step instructions with each submission reuirement being fufilled
+> Assist me with step by step instructions with each submission requirement being followed for completion and explanations in detail explaining what each command and what each request is for to gain understanding.
 
 Subsequent messages supplied terminal output for step-by-step review.
 
@@ -267,4 +267,3 @@ Subsequent messages supplied terminal output for step-by-step review.
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | Repository setup / ChatGPT | Guide examination setup and review supplied Git output. | Preserved unfinished sponsor work with git stash push -u; updated main; created exam/practical-persistence-eval; added explicit ignore rules. | None at this stage. Existing documentation was retained to preserve earlier provenance. | Student terminal output confirmed a clean working tree before exam edits, the required branch, and successful git check-ignore results for all five requested paths. git ls-files listed only .env.example among root environment files; historical credential review remains pending. | a0354b0 |
 
-Further implementation prompts, accepted/rejected output, actual verification results, and commit hashes will be recorded as work proceeds. Earlier laboratory test results do not establish that the examination implementation passes.
