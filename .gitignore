@@ -41,3 +41,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 supabase/.temp/
+# Practical examination requirements
+node_modules/
+.env
+.env*.local
+dist/
+.next/
