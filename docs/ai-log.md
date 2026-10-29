@@ -255,3 +255,16 @@ The project uses a manually reviewed numbered migration. A dry run identified th
 ### Review Decision
 
 AI output was treated as draft technical feedback. Recommendations were accepted only when they matched the project requirements and were verified against the development database. Incomplete, overbroad, or workflow-conflicting suggestions were documented and rejected.
+## October 29, 2026 Practical Examination
+
+### Initial student prompt (verbatim)
+
+> help me with stepe by step instructions with each submission reuirement being fufilled
+
+Subsequent messages supplied terminal output for step-by-step review.
+
+| Step / Tool | Prompt Summary | Model Output Used | Model Output Rejected & Rationale | Verification Method | Associated Git Commit |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| Repository setup / ChatGPT | Guide examination setup and review supplied Git output. | Preserved unfinished sponsor work with git stash push -u; updated main; created exam/practical-persistence-eval; added explicit ignore rules. | None at this stage. Existing documentation was retained to preserve earlier provenance. | Student terminal output confirmed a clean working tree before exam edits, the required branch, and successful git check-ignore results for all five requested paths. git ls-files listed only .env.example among root environment files; historical credential review remains pending. | Pending; record the setup commit hash after committing. |
+
+Further implementation prompts, accepted/rejected output, actual verification results, and commit hashes will be recorded as work proceeds. Earlier laboratory test results do not establish that the examination implementation passes.
