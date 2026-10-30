@@ -23,23 +23,24 @@
 | Anonymous | Read draft property | No draft disclosed | 0 matching rows returned as anon | PASS |
 | Anonymous | Read active sponsor | Active sponsor visible | 1 matching row returned as anon | PASS |
 | Anonymous | Read inactive sponsor | No inactive sponsor disclosed | 0 matching rows returned as anon | PASS |
-| Owner A | Insert own draft | Insert succeeds | Pending | PENDING |
-| Owner A | Update own draft | One row changes | Pending | PENDING |
-| Owner A | Update Owner B listing | No row changes | Pending | PENDING |
-| Owner A | Update own approved listing | No row changes | Pending | PENDING |
-| Owner A | Change draft to approved | Update denied | Pending | PENDING |
+| Owner A | Insert own draft | Insert succeeds | 1 row inserted as authenticated Owner A | PASS |
+| Owner A | Update own draft | One row changes | 1 row updated; elevated check confirmed saved price | PASS |
+| Owner A | Update Owner B listing | No row changes | 0 rows updated; Owner B record unchanged | PASS |
+| Owner A | Update own approved listing | No row changes | 0 rows updated; approved record unchanged | PASS |
+| Owner A | Change draft to approved | Update denied | Insufficient-privilege error caught; listing remained draft | PASS |
 | Inquirer | Submit anonymous inquiry | Insert succeeds | Elevated verification confirmed 1 saved inquiry | PASS |
 | Inquirer | Read existing inquiries | No inquiries disclosed | 0 matching inquiry rows returned as anon | PASS |
-| Property owner | Read own property's inquiries | Matching inquiries visible | Pending | PENDING |
-| Ordinary user | Change own profile role | Update denied | Pending | PENDING |
-| Service role | Read/write all five tables | Operations succeed | Pending | PENDING |
+| Property owner | Read own property's inquiries | Matching inquiries visible | Only 1 of the 2 fixture inquiries was visible | PASS |
+| Ordinary user | Change own profile role | Update denied | Insufficient-privilege error caught; role remained property_owner | PASS |
+| Service role | Read/write all five tables | Operations succeed | 19 checks passed as service_role; reads and updates covered all five tables, with inserts and deletes on the four listing-related tables | PASS |
 
 ## Test Method
 
 Configuration was checked using SQL Editor metadata queries.
 
-Anonymous authorization tests were executed using
-supabase/tests/exam-anonymous.sql.
+### Anonymous Tests
+
+Script: supabase/tests/exam-anonymous.sql
 
 The script created fictional fixtures and switched to the anon
 database role with no authenticated user identity.
@@ -59,8 +60,59 @@ constitute a service-role administrator test.
 All six checks passed. The script ended with ROLLBACK to remove
 the fictional test records.
 
-Owner isolation, privilege escalation, and service-role tests
-remain pending.
+### Owner and Privilege-Escalation Tests
+
+Script: supabase/tests/exam-owners.sql
+Execution date: October 30, 2026.
+
+The script temporarily assigned two existing profiles the
+property_owner role and created fictional listings and inquiries.
+
+It switched to the authenticated database role with Owner A's
+user identity.
+
+All 12 checks passed:
+- Authenticated identity matched Owner A.
+- Owner A inserted an owned draft.
+- Owner A updated an owned draft.
+- Owner A could not update Owner B's draft.
+- Owner A could not update an owned approved listing.
+- Owner A could not approve an owned draft.
+- Owner A saw only one of the two owners' fixture inquiries.
+- Owner A could not assign themselves the admin role.
+- Elevated verification confirmed the owned draft's saved price.
+- Elevated verification confirmed Owner B's draft was unchanged.
+- Elevated verification confirmed the approved listing was unchanged.
+- Elevated verification confirmed Owner A's role was unchanged.
+
+The script ended with ROLLBACK, restoring the temporary profile
+role assignments and removing the fictional test records.
+
+### Service-Role Administrative Tests
+
+Script: supabase/tests/exam-service-role.sql
+Execution date: October 30, 2026.
+
+All 19 checks passed using the service_role database role:
+- Execution identity was service_role.
+- Reads and updates succeeded on all five subsystem tables.
+- Inserts and deletes succeeded on properties, sponsors,
+  property_sponsors, and inquiries.
+- Protected profile-role changes and approved-listing edits succeeded.
+
+Existing authentication accounts were preserved. Profile insertion
+and deletion were not exercised by this script.
+
+The script ended with ROLLBACK to restore the profile and remove
+all fictional test records.
+
+Database authorization checks are complete for the recorded cases.
+API authentication, validation, UI, and deployment checks remain.
+
+### Interpretation
 
 A denied operation may return zero affected rows instead of an
-error. Tests must check row counts and persisted values.
+error. Tests check affected-row counts and persisted values.
+
+Database-role simulation verifies database authorization.
+Application authentication and API behavior require separate tests.

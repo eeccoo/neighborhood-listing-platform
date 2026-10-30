@@ -267,3 +267,9 @@ Subsequent messages supplied terminal output for step-by-step review.
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | Repository setup / ChatGPT | Guide examination setup and review supplied Git output. | Preserved unfinished sponsor work with git stash push -u; updated main; created exam/practical-persistence-eval; added explicit ignore rules. | None at this stage. Existing documentation was retained to preserve earlier provenance. | Student terminal output confirmed a clean working tree before exam edits, the required branch, and successful git check-ignore results for all five requested paths. git ls-files listed only .env.example among root environment files; historical credential review remains pending. | a0354b0 |
 
+### Service-Role Verification
+
+All 19 checks passed under service_role. The test verified reads
+and updates across all five subsystem tables, plus inserts and
+deletes on the four listing-related tables. Profile creation and
+deletion were not tested. All changes were rolled back.
