@@ -116,3 +116,30 @@ error. Tests check affected-row counts and persisted values.
 
 Database-role simulation verifies database authorization.
 Application authentication and API behavior require separate tests.
+## Property API Verification
+
+Implementation commit: fe61097.
+
+| Request | Actual result | Verdict |
+| --- | --- | --- |
+| GET /api/properties | HTTP 200; returned only the six required public property fields | PASS |
+| POST with negative price | HTTP 400; price issue with code too_small | PASS |
+| POST with extra status field | HTTP 400; unrecognized_keys issue | PASS |
+| POST with malformed JSON | HTTP 400; invalid_json issue | PASS |
+| POST with valid payload without authentication | HTTP 401; authentication required | PASS |
+| POST as authenticated property owner | HTTP 201; owner_id matched the authenticated user and status was draft | PASS |
+
+Authenticated creation initially returned HTTP 403 because the
+signed-in test account lacked the property_owner role.
+After trusted administrative role assignment, the same valid
+request returned HTTP 201 with matching ownership and draft status.
+
+Created test property:
+859d8cfa-8885-4e16-a277-59b61ae361e9.
+
+PASS: Direct SQL verification returned one persisted record.
+Both owner_matches and saved_as_draft returned true.
+
+Controlled HTTP fixture tests for draft exclusion and inactive
+sponsorship exclusion remain pending. UI and deployment verification
+remain pending.
