@@ -143,3 +143,28 @@ Both owner_matches and saved_as_draft returned true.
 Controlled HTTP fixture tests for draft exclusion and inactive
 sponsorship exclusion remain pending. UI and deployment verification
 remain pending.
+
+### Inquiry Form Persistence Confirmed
+
+PASS: Direct SQL verification returned one saved inquiry for
+property 11111111-1111-4111-8111-111111111111 with email
+exam-inquirer@example.invalid and the submitted fictional message.
+
+The form's success notification was independently confirmed
+against the database.
+
+## Production Build Verification
+
+PASS: npm run build completed successfully on October 31, 2026.
+Compilation, TypeScript checking, page-data collection, and static
+page generation completed without errors.
+
+Generated routes:
+- /
+- /login
+- /api/properties
+- /api/properties/[propertyId]/sponsors
+- /api/inquiries
+
+Keyboard and responsive-layout results are documented in
+docs/exam-accessibility.md. Hosted deployment verification remains pending.
