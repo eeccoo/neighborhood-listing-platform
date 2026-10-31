@@ -257,7 +257,7 @@ The project uses a manually reviewed numbered migration. A dry run identified th
 AI output was treated as draft technical feedback. Recommendations were accepted only when they matched the project requirements and were verified against the development database. Incomplete, overbroad, or workflow-conflicting suggestions were documented and rejected.
 ## October 29, 2026 Practical Examination
 
-### Initial student prompt (verbatim)
+### Student request summary
 
 > Assist me with step by step instructions with each submission requirement being followed for completion and explanations in detail explaining what each command and what each request is for to gain understanding.
 
