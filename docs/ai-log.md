@@ -273,3 +273,11 @@ All 19 checks passed under service_role. The test verified reads
 and updates across all five subsystem tables, plus inserts and
 deletes on the four listing-related tables. Profile creation and
 deletion were not tested. All changes were rolled back.
+### Credential-History Verification
+
+The student executed Gitleaks through its official Docker image.
+The repository was mounted read-only, with redacted output and
+all locally available Git references included.
+
+Actual result: 47 commits scanned; no leaks found.
+This supersedes earlier notes marking credential-history review pending.

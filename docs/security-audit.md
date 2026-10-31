@@ -168,3 +168,14 @@ Generated routes:
 
 Keyboard and responsive-layout results are documented in
 docs/exam-accessibility.md. Hosted deployment verification remains pending.
+
+## Credential-History Review
+
+On October 31, 2026, Gitleaks scanned all locally available Git
+references using --log-opts="--all" and --redact=100.
+
+Result: 47 commits scanned; no leaks found.
+
+No credentials or secret keys were detected in the audited Git
+history. This records the scanner's result, not an absolute
+guarantee that every possible secret format can be detected.
