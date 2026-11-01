@@ -281,3 +281,16 @@ all locally available Git references included.
 
 Actual result: 47 commits scanned; no leaks found.
 This supersedes earlier notes marking credential-history review pending.
+
+### Implementation and Hosted Verification Follow-up
+
+The prompts below are summaries of the student’s requests and
+supplied terminal output or screenshots, not verbatim transcripts.
+
+| Tool | Prompt summary | Output accepted | Output rejected or corrected | Verification | Commit |
+| --- | --- | --- | --- | --- | --- |
+| ChatGPT | Resolve property payload validation and authentication failures. | Strict input schema, session-derived ownership, forced draft status. | Client-supplied status was rejected; the initial test account needed trusted role assignment. | HTTP 400/401/201 responses and persisted ownership/draft checks. | fe61097 |
+| ChatGPT | Verify keyboard access, responsive layout, and build. | Manual checks and measured grid columns documented with limitations. | No claim of complete WCAG compliance. | Keyboard checks, browser measurements, and successful production build. | 4606bac |
+| ChatGPT | Scan credential history. | Read-only Docker Gitleaks scan with redacted output. | A clean scan was not treated as an absolute guarantee. | Actual output: 47 commits scanned; no leaks found. | e1a0824 |
+
+The student subsequently confirmed instructor repository access.
