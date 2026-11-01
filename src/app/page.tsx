@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 
 import PropertyCard from "@/components/PropertyCard";
@@ -23,8 +24,8 @@ interface PropertyApiRecord {
   bathrooms: number;
   square_feet: number;
   property_type: Property["propertyType"];
-  image_path: string;
-  details_url: string;
+  image_path: string | null;
+  details_url: string | null;
   amenities: string[];
   created_at: string;
 }
@@ -50,8 +51,13 @@ function mapApiProperty(
     bedrooms: property.bedrooms,
     bathrooms: Number(property.bathrooms),
     squareFootage: property.square_feet,
-    imagePath: property.image_path,
-    detailsUrl: property.details_url,
+    imagePath:
+      property.image_path?.startsWith("/images/properties/")
+        ? "/property-home.svg"
+        : property.image_path || "/property-home.svg",
+    detailsUrl:
+      property.details_url ??
+      `/?property=${encodeURIComponent(property.id)}#listings`,
     propertyType: property.property_type,
   };
 }
@@ -122,32 +128,37 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-  if (properties.length === 0) {
-    return;
-  }
+    if (properties.length === 0) {
+      return;
+    }
 
     const abortController = new AbortController();
-    const propertyId = properties[0].id;
 
     async function loadSelectedSponsor() {
       try {
-        const response = await fetch(
-          `/api/properties/${encodeURIComponent(propertyId)}/sponsor`,
-          {
-            cache: "no-store",
-            signal: abortController.signal,
-          },
-        );
+        for (const property of properties) {
+          const response = await fetch(
+            `/api/properties/${encodeURIComponent(property.id)}/sponsor`,
+            {
+              cache: "no-store",
+              signal: abortController.signal,
+            },
+          );
 
-        if (!response.ok) {
-          setSelectedSponsor(null);
-          return;
+          if (!response.ok) {
+            continue;
+          }
+
+          const payload =
+            (await response.json()) as SponsorApiResponse;
+
+          if (payload.sponsor) {
+            setSelectedSponsor(payload.sponsor);
+            return;
+          }
         }
 
-        const payload =
-          (await response.json()) as SponsorApiResponse;
-
-        setSelectedSponsor(payload.sponsor);
+        setSelectedSponsor(null);
       } catch (error) {
         if (
           error instanceof DOMException &&
@@ -200,9 +211,21 @@ export default function Home() {
     <main className="min-h-screen bg-slate-50 px-6 py-12 text-slate-950">
       <div className="mx-auto max-w-7xl">
         <header className="max-w-3xl">
-          <p className="font-semibold uppercase tracking-widest text-blue-700">
-            Welcome to your neighborhood
-          </p>
+          <div className="flex items-center gap-3">
+            <Image
+              src="/neighborhood-mark.svg"
+              alt=""
+              aria-hidden="true"
+              width={48}
+              height={48}
+              sizes="48px"
+              className="h-12 w-12 shrink-0"
+            />
+
+            <p className="font-semibold uppercase tracking-widest text-blue-700">
+              Welcome to your neighborhood
+            </p>
+          </div>
 
           <h1 className="mt-3 text-4xl font-bold tracking-tight sm:text-5xl">
             Neighborhood Property Listing Platform

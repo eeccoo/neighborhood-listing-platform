@@ -34,7 +34,9 @@ export default function PropertyCard({
         alt={`Illustration representing ${property.title} at ${property.streetAddress}, ${property.city}, ${property.state}`}
         width={640}
         height={360}
-        priority={priority}
+        sizes="(max-width: 767px) calc(100vw - 3rem), (max-width: 1023px) 50vw, 33vw"
+        loading={priority ? "eager" : "lazy"}
+        fetchPriority={priority ? "high" : "auto"}
         className="aspect-video w-full object-cover"
       />
 
@@ -47,7 +49,8 @@ export default function PropertyCard({
         </h3>
 
         <address className="mt-2 not-italic text-slate-600">
-          {property.streetAddress}, {property.city}, {property.state}
+          {property.streetAddress}, {property.city},{" "}
+          {property.state}
         </address>
 
         <p className="mt-4 text-2xl font-bold text-blue-800">
@@ -60,7 +63,10 @@ export default function PropertyCard({
         >
           <li>{property.bedrooms} bedrooms</li>
           <li>{property.bathrooms} bathrooms</li>
-          <li>{property.squareFootage.toLocaleString()} square feet</li>
+          <li>
+            {property.squareFootage.toLocaleString()} square
+            feet
+          </li>
         </ul>
 
         <div className="mt-auto flex flex-wrap gap-3 pt-6">
