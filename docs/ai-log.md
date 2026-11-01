@@ -257,7 +257,7 @@ The project uses a manually reviewed numbered migration. A dry run identified th
 AI output was treated as draft technical feedback. Recommendations were accepted only when they matched the project requirements and were verified against the development database. Incomplete, overbroad, or workflow-conflicting suggestions were documented and rejected.
 ## October 29, 2026 Practical Examination
 
-### Initial student prompt (verbatim)
+### Student request summary
 
 > Assist me with step by step instructions with each submission requirement being followed for completion and explanations in detail explaining what each command and what each request is for to gain understanding.
 
@@ -267,3 +267,30 @@ Subsequent messages supplied terminal output for step-by-step review.
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | Repository setup / ChatGPT | Guide examination setup and review supplied Git output. | Preserved unfinished sponsor work with git stash push -u; updated main; created exam/practical-persistence-eval; added explicit ignore rules. | None at this stage. Existing documentation was retained to preserve earlier provenance. | Student terminal output confirmed a clean working tree before exam edits, the required branch, and successful git check-ignore results for all five requested paths. git ls-files listed only .env.example among root environment files; historical credential review remains pending. | a0354b0 |
 
+### Service-Role Verification
+
+All 19 checks passed under service_role. The test verified reads
+and updates across all five subsystem tables, plus inserts and
+deletes on the four listing-related tables. Profile creation and
+deletion were not tested. All changes were rolled back.
+### Credential-History Verification
+
+The student executed Gitleaks through its official Docker image.
+The repository was mounted read-only, with redacted output and
+all locally available Git references included.
+
+Actual result: 47 commits scanned; no leaks found.
+This supersedes earlier notes marking credential-history review pending.
+
+### Implementation and Hosted Verification Follow-up
+
+The prompts below are summaries of the student’s requests and
+supplied terminal output or screenshots, not verbatim transcripts.
+
+| Tool | Prompt summary | Output accepted | Output rejected or corrected | Verification | Commit |
+| --- | --- | --- | --- | --- | --- |
+| ChatGPT | Resolve property payload validation and authentication failures. | Strict input schema, session-derived ownership, forced draft status. | Client-supplied status was rejected; the initial test account needed trusted role assignment. | HTTP 400/401/201 responses and persisted ownership/draft checks. | fe61097 |
+| ChatGPT | Verify keyboard access, responsive layout, and build. | Manual checks and measured grid columns documented with limitations. | No claim of complete WCAG compliance. | Keyboard checks, browser measurements, and successful production build. | 4606bac |
+| ChatGPT | Scan credential history. | Read-only Docker Gitleaks scan with redacted output. | A clean scan was not treated as an absolute guarantee. | Actual output: 47 commits scanned; no leaks found. | e1a0824 |
+
+The student subsequently confirmed instructor repository access.

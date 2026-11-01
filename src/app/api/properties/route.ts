@@ -1,25 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { CreatePropertySchema } from "@/schemas/property-input";
+import { createSupabaseServerClient } from "@/lib/supabaseServer";
+import { CreatePropertySchema } from "@/schemas/property";
 
-const PUBLIC_PROPERTY_COLUMNS = [
-  "id",
-  "title",
-  "street_address",
-  "city",
-  "state",
-  "zip_code",
-  "price",
-  "bedrooms",
-  "bathrooms",
-  "square_feet",
-  "property_type",
-  "image_path",
-  "details_url",
-  "amenities",
-  "created_at",
-].join(",");
+function failure(error: string, status: number) {
+  return NextResponse.json({ error }, { status });
+}
 
 export async function GET() {
   try {
@@ -27,32 +13,44 @@ export async function GET() {
 
     const { data, error } = await supabase
       .from("properties")
-      .select(PUBLIC_PROPERTY_COLUMNS)
+      .select(`
+        id,
+        address,
+        price,
+        bedrooms,
+        bathrooms,
+        square_feet,
+        property_sponsors!inner(
+          sponsors!inner(active_status)
+        )
+      `)
+      .eq("status", "approved")
+      .eq("property_sponsors.sponsors.active_status", true)
       .order("created_at", { ascending: false });
 
     if (error) {
       console.error("Property query failed:", error.code);
-
-      return NextResponse.json(
-        { error: "Unable to load properties." },
-        { status: 500 },
-      );
+      return failure("Unable to load properties.", 500);
     }
 
+    const properties = (data ?? []).map((property) => ({
+      id: property.id,
+      address: property.address,
+      price: property.price,
+      bedrooms: property.bedrooms,
+      bathrooms: property.bathrooms,
+      square_feet: property.square_feet,
+    }));
+
     return NextResponse.json(
-      { properties: data },
+      { properties },
       {
         status: 200,
-        headers: {
-          "Cache-Control": "no-store",
-        },
+        headers: { "Cache-Control": "no-store" },
       },
     );
   } catch {
-    return NextResponse.json(
-      { error: "Database service is unavailable." },
-      { status: 503 },
-    );
+    return failure("Database service is unavailable.", 503);
   }
 }
 
@@ -63,20 +61,29 @@ export async function POST(request: NextRequest) {
     requestBody = await request.json();
   } catch {
     return NextResponse.json(
-      { error: "Request body must contain valid JSON." },
+      {
+        error: "Request body must contain valid JSON.",
+        issues: [
+          {
+            path: "",
+            code: "invalid_json",
+            message: "Malformed JSON request body.",
+          },
+        ],
+      },
       { status: 400 },
     );
   }
 
-  const validationResult =
-    CreatePropertySchema.safeParse(requestBody);
+  const validation = CreatePropertySchema.safeParse(requestBody);
 
-  if (!validationResult.success) {
+  if (!validation.success) {
     return NextResponse.json(
       {
         error: "Property data failed validation.",
-        issues: validationResult.error.issues.map((issue) => ({
+        issues: validation.error.issues.map((issue) => ({
           path: issue.path.join("."),
+          code: issue.code,
           message: issue.message,
         })),
       },
@@ -93,41 +100,43 @@ export async function POST(request: NextRequest) {
     } = await supabase.auth.getUser();
 
     if (authenticationError || !user) {
-      return NextResponse.json(
-        { error: "Authentication is required." },
-        { status: 401 },
-      );
+      return failure("Authentication is required.", 401);
     }
 
     const { data, error } = await supabase
       .from("properties")
       .insert({
-        ...validationResult.data,
+        ...validation.data,
         owner_id: user.id,
-        is_approved: false,
+        status: "draft",
       })
-      .select(PUBLIC_PROPERTY_COLUMNS)
+      .select(
+        "id,owner_id,address,price,bedrooms,bathrooms,square_feet,status,created_at",
+      )
       .single();
 
     if (error) {
       console.error("Property creation failed:", error.code);
 
-      const status = error.code === "42501" ? 403 : 500;
+      const status =
+        error.code === "42501"
+          ? 403
+          : error.code.startsWith("22") ||
+              error.code.startsWith("23")
+            ? 400
+            : 500;
 
-      return NextResponse.json(
-        { error: "Unable to create property." },
-        { status },
-      );
+      return failure("Unable to create property.", status);
     }
 
     return NextResponse.json(
       { property: data },
-      { status: 201 },
+      {
+        status: 201,
+        headers: { "Cache-Control": "no-store" },
+      },
     );
   } catch {
-    return NextResponse.json(
-      { error: "Database service is unavailable." },
-      { status: 503 },
-    );
+    return failure("Database service is unavailable.", 503);
   }
 }
