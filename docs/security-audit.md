@@ -179,3 +179,17 @@ Result: 47 commits scanned; no leaks found.
 No credentials or secret keys were detected in the audited Git
 history. This records the scanner's result, not an absolute
 guarantee that every possible secret format can be detected.
+
+## Hosted Deployment Verification
+
+Verified October 31, 2026 (Pacific time).
+
+- PASS: Hosted GET /api/properties returned the expected property JSON.
+- PASS: The deployment share link opened in Incognito without Vercel login.
+- PASS: Hosted inquiry submission displayed a success message.
+- PASS: Supabase SQL Editor independently confirmed one saved inquiry
+  for exam-hosted@example.invalid and property
+  11111111-1111-4111-8111-111111111111.
+- The saved inquiry contained the expected fictional test message.
+
+The full deployment share link is provided separately in the submission.
