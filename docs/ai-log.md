@@ -345,5 +345,5 @@ Subsequent messages supplied terminal output for step-by-step review.
 - Its leading-zero ZIP case became an automated test.
 - `npm test` passed all 16 tests.
 
-**Commit:** Pending final verified commit.
+**Commit:** `9cb1383` — Add deterministic contextual sponsor selection.
 
