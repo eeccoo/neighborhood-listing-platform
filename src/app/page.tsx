@@ -5,7 +5,11 @@ import { useEffect, useState } from "react";
 import PropertyCard from "@/components/PropertyCard";
 import SearchFilters from "@/components/SearchFilters";
 import SponsorBanner from "@/components/SponsorBanner";
-import { sponsor } from "@/data/properties";
+import { sponsorCandidates } from
+  "@/data/sponsor-campaigns";
+
+import { selectSponsor } from
+  "@/lib/sponsors/select-sponsor";
 import type {
   Property,
   SearchFilterValues,
@@ -32,6 +36,22 @@ interface PropertyApiRecord {
 interface PropertyApiResponse {
   properties: PropertyApiRecord[];
 }
+const sponsorNow = new Date();
+
+const sponsorContext = {
+  zipCode: "90026",
+  placement: "search-banner" as const,
+  now: sponsorNow,
+  rotationKey:
+    `property-search:90026:${sponsorNow
+      .toISOString()
+      .slice(0, 10)}`,
+};
+
+const selectedSponsor = selectSponsor(
+  sponsorContext,
+  sponsorCandidates,
+);
 
 function mapApiProperty(
   property: PropertyApiRecord,
@@ -165,7 +185,24 @@ export default function Home() {
         </div>
 
         <div className="mt-8">
-          <SponsorBanner sponsor={sponsor} />
+          <SponsorBanner
+  sponsor={
+    selectedSponsor
+      ? {
+          id: selectedSponsor.id,
+          businessName:
+            selectedSponsor.businessName,
+          shortDescription:
+            selectedSponsor.shortDescription,
+          destinationUrl:
+            selectedSponsor.destinationUrl,
+          sponsoredLabel: "Sponsored",
+        }
+      : null
+  }
+  placement={sponsorContext.placement}
+  pageContext="property-search:90026"
+/>
         </div>
 
         <section

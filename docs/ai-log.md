@@ -267,3 +267,83 @@ Subsequent messages supplied terminal output for step-by-step review.
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | Repository setup / ChatGPT | Guide examination setup and review supplied Git output. | Preserved unfinished sponsor work with git stash push -u; updated main; created exam/practical-persistence-eval; added explicit ignore rules. | None at this stage. Existing documentation was retained to preserve earlier provenance. | Student terminal output confirmed a clean working tree before exam edits, the required branch, and successful git check-ignore results for all five requested paths. git ls-files listed only .env.example among root environment files; historical credential review remains pending. | a0354b0 |
 
+## Contextual Sponsor Selection Review
+
+### ChatGPT Adversarial Review
+
+**Prompt:**
+
+> Act as an adversarial tester for this contextual sponsor-selection
+> function. Generate boundary cases involving dates, ZIP codes, empty
+> data, ties, unapproved records, and unsafe URLs. Do not propose user
+> profiling.
+
+**Useful output accepted:**
+
+- Test exact and nearby ZIP matches separately.
+- Treat the campaign end timestamp as exclusive.
+- Prove that reversing tied input does not change the winner.
+- Test empty data, inactive sponsors, expired campaigns, and unmatched
+  ZIP codes.
+- Reject unsafe redirect protocols and unknown sponsor records.
+- Use only approved server-side destinations.
+
+**Output rejected:**
+
+- Identity-based or behavior-based targeting was rejected.
+- Protected or inferred demographic targeting was rejected.
+- Unseeded randomness was rejected because it is difficult to test.
+- Browser-provided destination URLs were rejected as unsafe.
+
+**Verification:**
+
+- `npm test` passed all 16 tests.
+- `npm run lint` completed without errors.
+- `npm run build` compiled successfully.
+- Next.js detected `/api/sponsor-click` and
+  `/api/sponsor-impressions`.
+
+**Commit:** Pending final verified commit.
+
+### Gemini Adversarial Review
+
+**Prompt:**
+
+> Act as an adversarial tester for a deterministic contextual
+> sponsor-selection function. Generate boundary cases involving campaign
+> start and end dates, exact and nearby ZIP codes, empty candidate data,
+> priority ties, unapproved or inactive records, wrong placements, and
+> unsafe redirect URLs. The function must not use identity, protected
+> traits, inferred demographics, browsing history, or other user
+> profiling. Separate useful test cases from approaches that should be
+> rejected.
+
+**Useful output accepted:**
+
+- Test exact start and end timestamp boundaries.
+- Preserve ZIP codes as strings so leading zeros are not lost.
+- Reject inverted date ranges, unapproved records, inactive records, and
+  wrong placements.
+- Verify that changing candidate array order does not change a tied
+  result.
+- Reject HTTP, JavaScript, data, file, and other unsafe URL protocols.
+- Return the fallback when candidate data is empty or all candidates are
+  ineligible.
+
+**Output rejected:**
+
+- User IDs, cookies, and device fingerprinting were rejected.
+- Browsing-history and clickstream weighting were rejected.
+- Demographic or protected-trait inference from ZIP codes was rejected.
+- Lookalike scoring and user-level frequency tracking were rejected.
+- Nondeterministic random or multi-armed-bandit selection was rejected.
+
+**Verification:**
+
+- Gemini’s exact-start boundary case became an automated test.
+- Its inverted-date and wrong-placement cases became automated tests.
+- Its leading-zero ZIP case became an automated test.
+- `npm test` passed all 16 tests.
+
+**Commit:** Pending final verified commit.
+
