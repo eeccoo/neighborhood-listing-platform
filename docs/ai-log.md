@@ -303,7 +303,7 @@ Subsequent messages supplied terminal output for step-by-step review.
 - Next.js detected `/api/sponsor-click` and
   `/api/sponsor-impressions`.
 
-**Commit:** Pending final verified commit.
+**Commit:** `9cb1383` — Add deterministic contextual sponsor selection.
 
 ### Gemini Adversarial Review
 
