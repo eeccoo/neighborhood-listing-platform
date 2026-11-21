@@ -49,7 +49,9 @@ export interface PropertyCardProps {
 }
 
 export interface SponsorBannerProps {
-  sponsor: Sponsor;
+  sponsor: Sponsor | null;
+  placement: string;
+  pageContext: string;
 }
 
 export interface SearchFiltersProps {
