@@ -40,14 +40,19 @@ prevent layout movement.
 
 | Measurement | Before | After |
 | --- | ---: | ---: |
-| Lighthouse performance | 100 | Pending preview |
-| Largest Contentful Paint | 0.6 s | Pending preview |
-| Cumulative Layout Shift | 0 | Pending preview |
+| Lighthouse performance | 100 | 99 |
+| Largest Contentful Paint | 0.6 s | 0.9 s |
+| Cumulative Layout Shift | 0 | 0 |
 | Sponsor public image | No sponsor image | 702 bytes |
 
+The optimized sponsor image increased measured LCP by 0.3 seconds while
+the performance score remained 99 and CLS remained 0. The explicit
+dimensions and 16:9 container prevented layout shift. Lighthouse values
+are estimates and may vary between runs.
+
 The baseline was measured on the deployed `main` application using
-Chrome Lighthouse Desktop navigation mode. The after measurement will
-use the pull-request Vercel preview with the same Lighthouse settings.
+Chrome Lighthouse Desktop navigation mode. The after measurement used the pull-request Vercel preview with the
+same Lighthouse settings.
 
 ## Slow and Missing Image Verification
 

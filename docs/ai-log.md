@@ -349,6 +349,12 @@ Subsequent messages supplied terminal output for step-by-step review.
 
 ## Sponsor Assets and Approved Promotional Copy
 
+- Preview Lighthouse performance: 99
+- Preview LCP: 0.9 seconds
+- Preview CLS: 0
+- Preview FCP: 0.6 seconds
+- Preview Total Blocking Time: 0 ms
+
 ### Shared Facts-Only Prompt
 
 > Using only the approved facts below, create three sponsor blurbs under
@@ -423,4 +429,4 @@ application.
 - Baseline LCP: 0.6 seconds
 - Baseline CLS: 0
 
-**Commit:** Pending final verified commit.
+**Commit:** `2d562e0` — Add approved sponsor assets and factual copy.
