@@ -36,8 +36,15 @@ export interface Sponsor {
   businessName: string;
   shortDescription: string;
   destinationUrl: string;
+  offerEndsAt: string;
+  image: {
+    src: string;
+    width: number;
+    height: number;
+    alt: string;
+  };
 
-  // Optional because SponsorBanner can use the default label "Sponsored."
+  // Optional because the default disclosure is "Sponsored."
   sponsoredLabel?: string;
 }
 
@@ -52,6 +59,7 @@ export interface SponsorBannerProps {
   sponsor: Sponsor | null;
   placement: string;
   pageContext: string;
+  currentTime: string;
 }
 
 export interface SearchFiltersProps {

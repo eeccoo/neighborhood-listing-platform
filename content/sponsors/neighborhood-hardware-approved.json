@@ -1,0 +1,18 @@
+{
+  "sponsorId": "sponsor-neighborhood-hardware",
+  "status": "approved",
+  "approvedCopy": "Plan home maintenance with a free 15-minute consultation from Neighborhood Hardware through December 31.",
+  "characterLimit": 120,
+  "approvedBy": "Giovanni Clara",
+  "approvedAt": "2026-11-21",
+  "offerEndsAt": "2027-01-01T00:00:00.000Z",
+  "destinationUrl": "https://example.com/neighborhood-hardware",
+  "image": {
+    "src": "/sponsors/neighborhood-hardware-1200x675.svg",
+    "width": 1200,
+    "height": 675,
+    "alt": "Illustration of tools representing Neighborhood Hardware's home-maintenance consultation"
+  },
+  "sourceBrief": "content/sponsors/neighborhood-hardware-brief.json",
+  "rawModelOutput": "content/sponsors/neighborhood-hardware-raw-ai-copy.md"
+}

@@ -9,7 +9,7 @@
     "lint": "eslint",
     "schema:generate": "tsx scripts/export-json-schema.ts",
     "data:validate": "tsx scripts/validate-generated-data.ts",
-    "test": "tsx --test tests/property-data.test.ts tests/sponsor-selector.test.ts"
+    "test": "tsx --test tests/property-data.test.ts tests/sponsor-selector.test.ts tests/sponsor-content.test.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

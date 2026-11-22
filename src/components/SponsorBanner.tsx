@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import SponsorImage from
+  "@/components/SponsorImage";
 import SponsorImpression from
   "@/components/SponsorImpression";
 
@@ -13,8 +15,19 @@ export default function SponsorBanner({
   sponsor,
   placement,
   pageContext,
+  currentTime,
 }: SponsorBannerProps) {
-  if (!sponsor) {
+  const offerEnd = sponsor
+    ? Date.parse(sponsor.offerEndsAt)
+    : Number.NaN;
+
+  const contentIsDisplayable =
+    sponsor !== null &&
+    sponsor.shortDescription.length <= 120 &&
+    Number.isFinite(offerEnd) &&
+    Date.parse(currentTime) < offerEnd;
+
+  if (!contentIsDisplayable || !sponsor) {
     return (
       <aside
         aria-label="Neighborhood resource information"
@@ -42,32 +55,43 @@ export default function SponsorBanner({
   return (
     <aside
       aria-label={`${disclosure}: ${sponsor.businessName}`}
-      className="rounded-xl border border-amber-300 bg-amber-50 p-5 text-slate-900"
+      className="overflow-hidden rounded-xl border border-amber-300 bg-amber-50 text-slate-900"
     >
-      <p className="text-sm font-bold uppercase tracking-wider text-amber-800">
-        {disclosure}
-      </p>
+      <div className="p-5">
+        <p className="text-sm font-bold uppercase tracking-wider text-amber-800">
+          {disclosure}
+        </p>
+      </div>
 
-      <SponsorImpression
-        sponsorId={sponsor.id}
-        placement={placement}
-        pageContext={pageContext}
+      <SponsorImage
+        src={sponsor.image.src}
+        width={sponsor.image.width}
+        height={sponsor.image.height}
+        alt={sponsor.image.alt}
       />
 
-      <h2 className="mt-2 text-xl font-bold">
-        {sponsor.businessName}
-      </h2>
+      <div className="p-5">
+        <SponsorImpression
+          sponsorId={sponsor.id}
+          placement={placement}
+          pageContext={pageContext}
+        />
 
-      <p className="mt-2 max-w-3xl text-slate-700">
-        {sponsor.shortDescription}
-      </p>
+        <h2 className="text-xl font-bold">
+          {sponsor.businessName}
+        </h2>
 
-      <Link
-        href={clickUrl}
-        className="mt-4 inline-flex rounded-lg bg-amber-800 px-4 py-2 font-semibold text-white hover:bg-amber-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-800 focus-visible:ring-offset-2"
-      >
-        Visit {sponsor.businessName}
-      </Link>
+        <p className="mt-2 max-w-3xl text-slate-700">
+          {sponsor.shortDescription}
+        </p>
+
+        <Link
+          href={clickUrl}
+          className="mt-4 inline-flex rounded-lg bg-amber-800 px-4 py-2 font-semibold text-white hover:bg-amber-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-800 focus-visible:ring-offset-2"
+        >
+          Visit {sponsor.businessName}
+        </Link>
+      </div>
     </aside>
   );
 }

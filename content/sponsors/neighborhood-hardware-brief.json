@@ -1,0 +1,19 @@
+{
+  "sponsorId": "sponsor-neighborhood-hardware",
+  "businessName": "Neighborhood Hardware",
+  "approvedOffer": "Free 15-minute home-maintenance planning consultation",
+  "address": "100 Fictional Avenue, Los Angeles, CA 90026",
+  "campaignStartsAt": "2026-11-21T00:00:00.000Z",
+  "campaignEndsAt": "2027-01-01T00:00:00.000Z",
+  "destinationUrl": "https://example.com/neighborhood-hardware",
+  "prohibitedWording": [
+    "best",
+    "guaranteed",
+    "limited time",
+    "act now",
+    "perfect for families",
+    "exclusive neighborhood",
+    "demographic or protected-trait targeting"
+  ],
+  "fixtureNotice": "All sponsor facts are fictional and used only for this class project."
+}

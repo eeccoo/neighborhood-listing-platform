@@ -1,211 +1,217 @@
-"use client";
+  "use client";
 
-import { useEffect, useState } from "react";
+  import { useEffect, useState } from "react";
 
-import PropertyCard from "@/components/PropertyCard";
-import SearchFilters from "@/components/SearchFilters";
-import SponsorBanner from "@/components/SponsorBanner";
-import { sponsorCandidates } from
-  "@/data/sponsor-campaigns";
+  import PropertyCard from "@/components/PropertyCard";
+  import SearchFilters from "@/components/SearchFilters";
+  import SponsorBanner from "@/components/SponsorBanner";
+  import {
+    approvedNeighborhoodHardwareContent,
+    displayableSponsorCandidates,
+  } from "@/data/sponsor-campaigns";
 
-import { selectSponsor } from
-  "@/lib/sponsors/select-sponsor";
-import type {
-  Property,
-  SearchFilterValues,
-} from "@/types";
+  import { selectSponsor } from
+    "@/lib/sponsors/select-sponsor";
+  import type {
+    Property,
+    SearchFilterValues,
+  } from "@/types";
 
-interface PropertyApiRecord {
-  id: string;
-  title: string;
-  street_address: string;
-  city: string;
-  state: string;
-  zip_code: string;
-  price: number;
-  bedrooms: number;
-  bathrooms: number;
-  square_feet: number;
-  property_type: Property["propertyType"];
-  image_path: string;
-  details_url: string;
-  amenities: string[];
-  created_at: string;
-}
+  interface PropertyApiRecord {
+    id: string;
+    title: string;
+    street_address: string;
+    city: string;
+    state: string;
+    zip_code: string;
+    price: number;
+    bedrooms: number;
+    bathrooms: number;
+    square_feet: number;
+    property_type: Property["propertyType"];
+    image_path: string;
+    details_url: string;
+    amenities: string[];
+    created_at: string;
+  }
 
-interface PropertyApiResponse {
-  properties: PropertyApiRecord[];
-}
-const sponsorNow = new Date();
+  interface PropertyApiResponse {
+    properties: PropertyApiRecord[];
+  }
+  const sponsorNow = new Date();
 
-const sponsorContext = {
-  zipCode: "90026",
-  placement: "search-banner" as const,
-  now: sponsorNow,
-  rotationKey:
-    `property-search:90026:${sponsorNow
-      .toISOString()
-      .slice(0, 10)}`,
-};
-
-const selectedSponsor = selectSponsor(
-  sponsorContext,
-  sponsorCandidates,
-);
-
-function mapApiProperty(
-  property: PropertyApiRecord,
-): Property {
-  return {
-    id: property.id,
-    title: property.title,
-    streetAddress: property.street_address,
-    city: property.city,
-    state: property.state,
-    price: Number(property.price),
-    bedrooms: property.bedrooms,
-    bathrooms: Number(property.bathrooms),
-    squareFootage: property.square_feet,
-    imagePath: property.image_path,
-    detailsUrl: property.details_url,
-    propertyType: property.property_type,
+  const sponsorContext = {
+    zipCode: "90026",
+    placement: "search-banner" as const,
+    now: sponsorNow,
+    rotationKey:
+      `property-search:90026:${sponsorNow
+        .toISOString()
+        .slice(0, 10)}`,
   };
-}
 
-export default function Home() {
-  const [properties, setProperties] = useState<Property[]>(
-    [],
+  const selectedSponsor = selectSponsor(
+    sponsorContext,
+    displayableSponsorCandidates,
   );
-  const [filters, setFilters] =
-    useState<SearchFilterValues>({});
-  const [isLoading, setIsLoading] = useState(true);
-  const [loadError, setLoadError] = useState<
-    string | null
-  >(null);
 
-  useEffect(() => {
-    const abortController = new AbortController();
+  function mapApiProperty(
+    property: PropertyApiRecord,
+  ): Property {
+    return {
+      id: property.id,
+      title: property.title,
+      streetAddress: property.street_address,
+      city: property.city,
+      state: property.state,
+      price: Number(property.price),
+      bedrooms: property.bedrooms,
+      bathrooms: Number(property.bathrooms),
+      squareFootage: property.square_feet,
+      imagePath: property.image_path,
+      detailsUrl: property.details_url,
+      propertyType: property.property_type,
+    };
+  }
 
-    async function loadProperties() {
-      try {
-        setIsLoading(true);
-        setLoadError(null);
+  export default function Home() {
+    const [properties, setProperties] = useState<Property[]>(
+      [],
+    );
+    const [filters, setFilters] =
+      useState<SearchFilterValues>({});
+    const [isLoading, setIsLoading] = useState(true);
+    const [loadError, setLoadError] = useState<
+      string | null
+    >(null);
 
-        const response = await fetch("/api/properties", {
-          cache: "no-store",
-          signal: abortController.signal,
-        });
+    useEffect(() => {
+      const abortController = new AbortController();
 
-        if (!response.ok) {
-          throw new Error("Property request failed.");
-        }
+      async function loadProperties() {
+        try {
+          setIsLoading(true);
+          setLoadError(null);
 
-        const payload =
-          (await response.json()) as PropertyApiResponse;
+          const response = await fetch("/api/properties", {
+            cache: "no-store",
+            signal: abortController.signal,
+          });
 
-        setProperties(
-          payload.properties.map(mapApiProperty),
-        );
-      } catch (error) {
-        if (
-          error instanceof DOMException &&
-          error.name === "AbortError"
-        ) {
-          return;
-        }
+          if (!response.ok) {
+            throw new Error("Property request failed.");
+          }
 
-        setLoadError(
-          "Property listings are temporarily unavailable.",
-        );
-      } finally {
-        if (!abortController.signal.aborted) {
-          setIsLoading(false);
+          const payload =
+            (await response.json()) as PropertyApiResponse;
+
+          setProperties(
+            payload.properties.map(mapApiProperty),
+          );
+        } catch (error) {
+          if (
+            error instanceof DOMException &&
+            error.name === "AbortError"
+          ) {
+            return;
+          }
+
+          setLoadError(
+            "Property listings are temporarily unavailable.",
+          );
+        } finally {
+          if (!abortController.signal.aborted) {
+            setIsLoading(false);
+          }
         }
       }
+
+      void loadProperties();
+
+      return () => {
+        abortController.abort();
+      };
+    }, []);
+
+    const filteredProperties = properties.filter(
+      (property) => {
+        const matchesType =
+          filters.propertyType === undefined ||
+          property.propertyType === filters.propertyType;
+
+        const matchesPrice =
+          filters.minPrice === undefined ||
+          property.price >= filters.minPrice;
+
+        const matchesBedrooms =
+          filters.bedrooms === undefined ||
+          property.bedrooms >= filters.bedrooms;
+
+        return (
+          matchesType &&
+          matchesPrice &&
+          matchesBedrooms
+        );
+      },
+    );
+
+    function handleFilterSubmit(
+      submittedFilters: SearchFilterValues,
+    ) {
+      setFilters(submittedFilters);
     }
 
-    void loadProperties();
+    return (
+      <main className="min-h-screen bg-slate-50 px-6 py-12 text-slate-950">
+        <div className="mx-auto max-w-7xl">
+          <header className="max-w-3xl">
+            <p className="font-semibold uppercase tracking-widest text-blue-700">
+              Welcome to your neighborhood
+            </p>
 
-    return () => {
-      abortController.abort();
-    };
-  }, []);
+            <h1 className="mt-3 text-4xl font-bold tracking-tight sm:text-5xl">
+              Neighborhood Property Listing Platform
+            </h1>
 
-  const filteredProperties = properties.filter(
-    (property) => {
-      const matchesType =
-        filters.propertyType === undefined ||
-        property.propertyType === filters.propertyType;
+            <p className="mt-6 text-lg leading-8 text-slate-600">
+              Explore local properties, connect with
+              neighborhood sponsors, and use accessible
+              search tools.
+            </p>
+          </header>
 
-      const matchesPrice =
-        filters.minPrice === undefined ||
-        property.price >= filters.minPrice;
+          <div className="mt-10">
+            <SearchFilters
+              onSubmit={handleFilterSubmit}
+            />
+          </div>
 
-      const matchesBedrooms =
-        filters.bedrooms === undefined ||
-        property.bedrooms >= filters.bedrooms;
-
-      return (
-        matchesType &&
-        matchesPrice &&
-        matchesBedrooms
-      );
-    },
-  );
-
-  function handleFilterSubmit(
-    submittedFilters: SearchFilterValues,
-  ) {
-    setFilters(submittedFilters);
-  }
-
-  return (
-    <main className="min-h-screen bg-slate-50 px-6 py-12 text-slate-950">
-      <div className="mx-auto max-w-7xl">
-        <header className="max-w-3xl">
-          <p className="font-semibold uppercase tracking-widest text-blue-700">
-            Welcome to your neighborhood
-          </p>
-
-          <h1 className="mt-3 text-4xl font-bold tracking-tight sm:text-5xl">
-            Neighborhood Property Listing Platform
-          </h1>
-
-          <p className="mt-6 text-lg leading-8 text-slate-600">
-            Explore local properties, connect with
-            neighborhood sponsors, and use accessible
-            search tools.
-          </p>
-        </header>
-
-        <div className="mt-10">
-          <SearchFilters
-            onSubmit={handleFilterSubmit}
+          <div className="mt-8">          <SponsorBanner
+            sponsor={
+              selectedSponsor &&
+              approvedNeighborhoodHardwareContent
+                ? {
+                    id: selectedSponsor.id,
+                    businessName:
+                      selectedSponsor.businessName,
+                    shortDescription:
+                      selectedSponsor.shortDescription,
+                    destinationUrl:
+                      selectedSponsor.destinationUrl,
+                    offerEndsAt:
+                      approvedNeighborhoodHardwareContent.offerEndsAt,
+                    image:
+                      approvedNeighborhoodHardwareContent.image,
+                    sponsoredLabel: "Sponsored",
+                  }
+                : null
+            }
+            placement={sponsorContext.placement}
+pageContext="property-search:90026"
+currentTime={sponsorNow.toISOString()}
           />
         </div>
-
-        <div className="mt-8">
-          <SponsorBanner
-  sponsor={
-    selectedSponsor
-      ? {
-          id: selectedSponsor.id,
-          businessName:
-            selectedSponsor.businessName,
-          shortDescription:
-            selectedSponsor.shortDescription,
-          destinationUrl:
-            selectedSponsor.destinationUrl,
-          sponsoredLabel: "Sponsored",
-        }
-      : null
-  }
-  placement={sponsorContext.placement}
-  pageContext="property-search:90026"
-/>
-        </div>
-
-        <section
+                <section
           id="listings"
           aria-labelledby="property-listings-heading"
           aria-busy={isLoading}
