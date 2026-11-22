@@ -15,7 +15,7 @@ import {
 const context: SponsorSelectionContext = {
   zipCode: "90026",
   placement: "search-banner",
-  now: new Date("2026-06-15T12:00:00.000Z"),
+  now: new Date("2026-12-15T12:00:00.000Z"),
   rotationKey: "fixed-seed",
 };
 

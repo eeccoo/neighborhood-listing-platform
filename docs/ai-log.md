@@ -347,3 +347,86 @@ Subsequent messages supplied terminal output for step-by-step review.
 
 **Commit:** `9cb1383` — Add deterministic contextual sponsor selection.
 
+## Sponsor Assets and Approved Promotional Copy
+
+- Preview Lighthouse performance: 99
+- Preview LCP: 0.9 seconds
+- Preview CLS: 0
+- Preview FCP: 0.6 seconds
+- Preview Total Blocking Time: 0 ms
+
+### Shared Facts-Only Prompt
+
+> Using only the approved facts below, create three sponsor blurbs under
+> 120 characters. Do not add superlatives, guarantees, urgency,
+> demographic targeting, or facts not supplied. Return a fact-to-phrase
+> trace for each variant.
+
+Approved facts included the fictional business name, free 15-minute
+home-maintenance planning consultation, fictional address, campaign
+dates, HTTPS destination, prohibited wording, and 120-character limit.
+
+### ChatGPT Generation and Risk Review
+
+**Useful output accepted:**
+
+- Three short variants were generated from the approved factual brief.
+- Each variant included a fact-to-phrase trace.
+- No variant used superlatives, guarantees, urgency, discriminatory
+  targeting, or unsupported benefits.
+- Raw model output was stored separately from approved content.
+
+**Output rejected or superseded:**
+
+- Variant 1 was superseded because it omitted the planning purpose.
+- Variant 3 was rejected because it changed singular `consultation` to
+  plural `consultations`.
+- AI output was not allowed to approve itself or publish directly.
+
+### Gemini Fidelity Review
+
+Gemini compared all variants against the approved facts. It found no
+superlatives, guarantees, urgency, discriminatory language, or invented
+benefits. It identified Variant 2 as most faithful because it preserves
+both the planning purpose and singular consultation wording.
+
+**Useful output accepted:**
+
+- Check singular versus plural offer wording.
+- Treat omitted facts separately from invented facts.
+- Verify the final character count programmatically.
+- Prefer Variant 2 for factual fidelity.
+
+**Output rejected or corrected:**
+
+- Gemini estimated Variant 2 at 98 characters. Local programmatic
+  verification measured the approved sentence at 104 characters.
+- The verified local result was retained because it directly checks the
+  stored approved string.
+
+### Human Approval
+
+Giovanni Clara reviewed every sentence and approved Variant 2 on
+November 21, 2026:
+
+> Plan home maintenance with a free 15-minute consultation from
+> Neighborhood Hardware through December 31.
+
+Variant 1 was marked rejected/superseded, and Variant 3 was rejected.
+Only the separately stored approved JSON is imported by the
+application.
+
+### Verification
+
+- Approved copy length: 104 of 120 characters
+- `npm test`: 24 tests passed
+- Slow 3G placeholder: passed
+- Missing-image fallback: passed and restored
+- Original asset: 1,156 bytes
+- Public optimized derivative: 702 bytes
+- Size reduction: approximately 39%
+- Baseline Lighthouse performance: 100
+- Baseline LCP: 0.6 seconds
+- Baseline CLS: 0
+
+**Commit:** `2d562e0` — Add approved sponsor assets and factual copy.
