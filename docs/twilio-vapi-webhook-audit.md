@@ -253,3 +253,22 @@ leaving the caller on a dead line.
 - 31 automated tests passed
 - ESLint passed
 - Next.js production build passed
+
+## Live Deployment Verification — November 22, 2026
+
+Preview endpoint:
+
+`https://neighborhood-listing-platform-git-feature-secu-12bfcd-team-5927.vercel.app/api/webhooks/twilio/voice`
+
+- An unsigned POST request reached the deployed Next.js route and returned
+  HTTP `403` with the exact body `Invalid Twilio signature.`
+- The Twilio trial inbound-call configuration used the endpoint above with
+  HTTP `POST`.
+- A call from a verified phone reached the published Neighborhood Listing
+  Assistant through Twilio, the Next.js route, and Vapi.
+- A grouped query of `public.twilio_webhook_events` confirmed that the call
+  was persisted without displaying the complete `CallSid` or caller number.
+- The handler logs only masked identifiers using `maskCallSid(callSid)` and
+  `maskPhoneNumber(caller)`. Transcript text is not written to logs.
+- Automated verification passed 31 tests, ESLint, TypeScript, and the
+  production build.
